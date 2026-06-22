@@ -4,7 +4,9 @@ export function safeTruncate(value: string, maxLength: number): string {
   }
 
   const characters = Array.from(value.trim());
+  const marker = '.'.repeat(Math.min(3, maxLength));
+
   return characters.length <= maxLength
     ? characters.join('')
-    : `${characters.slice(0, Math.max(0, maxLength - 3)).join('')}...`;
+    : `${characters.slice(0, maxLength - marker.length).join('')}${marker}`;
 }
