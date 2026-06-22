@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Frontend UI'
+  short_description: 'Build consistent Turalk web and admin UI'
+  default_prompt: 'Use the Turalk frontend UI conventions for this task.'

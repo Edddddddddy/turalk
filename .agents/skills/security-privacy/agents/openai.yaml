@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Security and Privacy'
+  short_description: 'Protect Turalk identity and user data'
+  default_prompt: 'Apply Turalk security and privacy boundaries to this task.'

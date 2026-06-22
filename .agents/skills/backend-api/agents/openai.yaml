@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Backend API'
+  short_description: 'Build consistent Turalk NestJS APIs'
+  default_prompt: 'Use the Turalk backend API conventions for this task.'

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Prisma Schema'
+  short_description: 'Safely evolve the Turalk Prisma schema'
+  default_prompt: 'Use the Turalk Prisma schema conventions for this task.'
