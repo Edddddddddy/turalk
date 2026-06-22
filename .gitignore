@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .next/
+.turbo/
+*.tsbuildinfo
 
 # Environment files (examples are intentionally tracked)
 .env
