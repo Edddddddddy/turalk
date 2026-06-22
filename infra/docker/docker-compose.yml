@@ -52,7 +52,11 @@ services:
         soft: 65536
         hard: 65536
     healthcheck:
-      test: ['CMD-SHELL', 'curl -fs http://localhost:9200/_cluster/health >/dev/null']
+      test:
+        [
+          'CMD-SHELL',
+          'curl -fs http://localhost:9200/_cluster/health >/dev/null',
+        ]
       interval: 15s
       timeout: 10s
       retries: 20

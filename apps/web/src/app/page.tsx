@@ -13,7 +13,8 @@ export default function HomePage() {
         <span className="eyebrow">面向二游玩家的可信社区</span>
         <h1>认真讨论游戏，也认真保护你的身份。</h1>
         <p>
-          Turalk 将后台实名认证与前台社区身份分离，为玩家提供可追责但不暴露真实身份的讨论空间。
+          Turalk
+          将后台实名认证与前台社区身份分离，为玩家提供可追责但不暴露真实身份的讨论空间。
         </p>
         <div className="actions">
           <Link className="button button-primary" href="/forums">

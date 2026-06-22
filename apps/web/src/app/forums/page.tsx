@@ -15,7 +15,11 @@ export default function ForumsPage() {
       </div>
       <div className="list-card">
         {forums.map((forum, index) => (
-          <Link className="list-row" href={`/threads/demo-${index + 1}`} key={forum}>
+          <Link
+            className="list-row"
+            href={`/threads/demo-${index + 1}`}
+            key={forum}
+          >
             <span>
               <strong>{forum}</strong>
               <small>分区说明与统计信息占位</small>
