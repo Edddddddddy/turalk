@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.next/
+
+# Environment files (examples are intentionally tracked)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+coverage/
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# Local databases and service data
+apps/api/prisma/migrations/dev.db
+infra/docker/data/
