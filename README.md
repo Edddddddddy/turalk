@@ -1,5 +1,98 @@
 # Turalk
 
-Initial monorepo workspace for the Turalk forum. Full setup instructions are added with the application scaffolds.
+Turalk 是面向二游玩家的实名论坛：后台完成身份核验，前台仅展示社区身份。第一版采用模块化单体，优先保持开发效率和事务一致性，同时为后续服务拆分保留清晰边界。
 
-The canonical checkout is `~/projects/turalk` in the WSL Linux filesystem. See [CONTRIBUTING.md](CONTRIBUTING.md) for the Git workflow.
+当前仓库仅包含工程骨架和占位页面，尚未实现注册登录、发帖评论、真实身份核验或治理业务。
+
+## 技术栈
+
+- pnpm monorepo、TypeScript、ESLint、Prettier
+- Next.js 16 + React 19 公共 Web
+- Vite + React 19 管理后台
+- NestJS 11 + Prisma 6 API
+- PostgreSQL、Redis、OpenSearch
+- Docker Compose 本地基础服务
+
+## 目录结构
+
+```text
+apps/
+  api/        NestJS 模块化单体 API
+  web/        Next.js 公共社区
+  admin/      Vite 管理后台
+packages/
+  config/     共享配置
+  shared/     通用工具
+  types/      前后端共享 DTO 类型
+infra/docker/ 本地基础服务
+docs/         架构、安全与开发文档
+```
+
+## 环境要求
+
+- 在 WSL Linux 文件系统中开发，推荐路径 `~/projects/turalk`
+- Node.js 24 LTS（最低 `22.12`）
+- pnpm 11（通过 Corepack 管理）
+- Docker Desktop，并为当前 WSL 发行版启用集成
+
+不要从 `/mnt/c`、`/mnt/d`、`/mnt/e` 或 Windows 用户目录运行项目。
+
+## 本地启动
+
+```bash
+cd ~/projects/turalk
+corepack enable
+pnpm install
+cp .env.example .env
+pnpm prisma:generate
+pnpm dev
+```
+
+默认地址：
+
+- Web: <http://localhost:3000>
+- API health: <http://localhost:3001/api/health>
+- Admin: <http://localhost:3002>
+
+也可以单独启动应用：
+
+```bash
+pnpm --filter @turalk/web dev
+pnpm --filter @turalk/api dev
+pnpm --filter @turalk/admin dev
+```
+
+## Docker 启动
+
+先确认 `.env` 中的本地数据库密码已经修改，然后运行：
+
+```bash
+docker compose --env-file .env -f infra/docker/docker-compose.yml up -d
+docker compose --env-file .env -f infra/docker/docker-compose.yml ps
+```
+
+停止服务但保留数据：
+
+```bash
+docker compose --env-file .env -f infra/docker/docker-compose.yml down
+```
+
+## 质量检查
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm prisma:validate
+```
+
+## 后续计划
+
+1. 用户注册登录
+2. 实名认证提供商接口抽象
+3. 论坛分区、帖子与评论
+4. 举报、人工审核与审计闭环
+5. 搜索、通知和二游特色功能
+
+完整路线见 [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md)，Git 规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
