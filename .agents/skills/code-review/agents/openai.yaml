@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Code Review'
+  short_description: 'Review Turalk changes for risks and regressions'
+  default_prompt: 'Review these Turalk changes using the repository checklist.'

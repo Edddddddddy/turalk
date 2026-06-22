@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Iteration Planning'
+  short_description: 'Plan focused Turalk feature iterations'
+  default_prompt: 'Plan this Turalk iteration with a strict, verifiable scope.'
