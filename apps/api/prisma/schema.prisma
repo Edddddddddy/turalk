@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+  DELETED
+}
+
+enum VerificationStatus {
+  NOT_STARTED
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  UNDER_REVIEW
+  HIDDEN
+  DELETED
+}
+
+enum ReportStatus {
+  OPEN
+  TRIAGED
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum ReportTargetType {
+  THREAD
+  COMMENT
+  USER
+}
+
+enum ModerationActionType {
+  NO_ACTION
+  HIDE_CONTENT
+  RESTORE_CONTENT
+  WARN_USER
+  SUSPEND_USER
+  BAN_USER
+}
+
+model User {
+  id                   String                    @id @default(cuid())
+  publicId             String                    @unique @default(cuid())
+  displayName          String
+  status               UserStatus                @default(PENDING)
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  auth                 UserAuth?
+  profile              UserProfile?
+  identityVerification UserIdentityVerification?
+  threads              Thread[]
+  comments             Comment[]
+  reportsFiled         Report[]                  @relation("ReportReporter")
+  reportsReviewed      Report[]                  @relation("ReportReviewer")
+  moderationActions    ModerationAction[]        @relation("ModerationActor")
+  auditLogs            AuditLog[]                @relation("AuditActor")
+
+  @@index([status])
+  @@map("users")
+}
+
+model UserAuth {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  email        String    @unique
+  passwordHash String
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_auth")
+}
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  avatarUrl String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model UserIdentityVerification {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  provider             String
+  providerSubjectToken String?            @unique
+  identityHash         String             @unique
+  status               VerificationStatus @default(NOT_STARTED)
+  verifiedAt           DateTime?
+  expiresAt            DateTime?
+  rejectionReasonCode  String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([status])
+  @@map("user_identity_verifications")
+}
+
+model Forum {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  position    Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  threads     Thread[]
+
+  @@index([isActive, position])
+  @@map("forums")
+}
+
+model Thread {
+  id        String        @id @default(cuid())
+  forumId   String
+  authorId  String
+  title     String
+  content   String
+  status    ContentStatus @default(PUBLISHED)
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  forum     Forum         @relation(fields: [forumId], references: [id], onDelete: Restrict)
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  comments  Comment[]
+  reports   Report[]
+
+  @@index([forumId, status, createdAt])
+  @@index([authorId, createdAt])
+  @@map("threads")
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  threadId  String
+  authorId  String
+  parentId  String?
+  content   String
+  status    ContentStatus @default(PUBLISHED)
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  thread    Thread        @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  parent    Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies   Comment[]     @relation("CommentReplies")
+  reports   Report[]
+
+  @@index([threadId, status, createdAt])
+  @@index([authorId, createdAt])
+  @@index([parentId])
+  @@map("comments")
+}
+
+model Report {
+  id           String           @id @default(cuid())
+  reporterId   String
+  reviewedById String?
+  targetType   ReportTargetType
+  threadId     String?
+  commentId    String?
+  reasonCode   String
+  details      String?
+  status       ReportStatus     @default(OPEN)
+  resolvedAt   DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  reporter     User             @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Restrict)
+  reviewedBy   User?            @relation("ReportReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  thread       Thread?          @relation(fields: [threadId], references: [id], onDelete: SetNull)
+  comment      Comment?         @relation(fields: [commentId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([reporterId, createdAt])
+  @@index([threadId])
+  @@index([commentId])
+  @@map("reports")
+}
+
+model ModerationAction {
+  id         String               @id @default(cuid())
+  actorId    String?
+  targetType ReportTargetType
+  targetId   String
+  actionType ModerationActionType
+  reasonCode String
+  notes      String?
+  metadata   Json?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  actor      User?                @relation("ModerationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([targetType, targetId])
+  @@index([actorId, createdAt])
+  @@map("moderation_actions")
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  action       String
+  resourceType String
+  resourceId   String?
+  requestId    String?
+  ipHash       String?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  actor        User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
