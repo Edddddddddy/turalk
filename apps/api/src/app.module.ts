@@ -1,5 +1,9 @@
-import { Module } from '@nestjs/common';
+import { resolve } from 'node:path';
 
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+import { validateEnvironment } from './config/env.validation';
 import { HealthController } from './health.controller';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuditModule } from './modules/audit/audit.module';
@@ -19,6 +23,15 @@ import { PrismaModule } from './prisma/prisma.module';
 @Module({
   controllers: [HealthController],
   imports: [
+    ConfigModule.forRoot({
+      cache: true,
+      envFilePath: [
+        resolve(process.cwd(), '.env'),
+        resolve(process.cwd(), '../../.env'),
+      ],
+      isGlobal: true,
+      validate: validateEnvironment,
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,

@@ -48,6 +48,8 @@ pnpm prisma:generate
 pnpm dev
 ```
 
+启动前请为 `.env` 中的 `JWT_ACCESS_SECRET`、`JWT_REFRESH_SECRET` 和 `PASSWORD_HASH_PEPPER` 分别生成至少 32 字符的独立随机值。不要复用或提交这些值。
+
 默认地址：
 
 - Web: <http://localhost:3000>

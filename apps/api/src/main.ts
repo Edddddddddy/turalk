@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
+import { ApiExceptionFilter } from './common/http/api-exception.filter';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,7 @@ async function bootstrap(): Promise<void> {
     .filter(Boolean);
 
   app.setGlobalPrefix('api');
+  app.useGlobalFilters(new ApiExceptionFilter());
   app.enableCors({
     credentials: true,
     origin: corsOrigins.length > 0 ? corsOrigins : true,

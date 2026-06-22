@@ -6,7 +6,9 @@
 
 ## 第 2 次迭代：用户注册登录
 
-实现邮箱或手机号注册、密码安全存储、登录会话、登出、令牌轮换、基础限流和账号状态管理。补充单元测试与 API 集成测试。
+**当前迭代。** 实现邮箱注册登录、Argon2id 密码哈希、JWT access/refresh token、refresh token 轮换与 hash 存储、登出、`/auth/me`、账号状态检查和最小审计记录。
+
+本次不实现手机号、短信验证码、OAuth、第三方登录、前端表单、Redis 分布式限流或数据库 e2e 测试。后续需补充 PasswordService/AuthService 单元测试，并在基础设施可用后执行 migration 和认证集成测试。
 
 ## 第 3 次迭代：实名认证接口抽象
 
