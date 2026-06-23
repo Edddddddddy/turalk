@@ -334,6 +334,148 @@ a {
   margin: 0;
 }
 
+.forum-layout {
+  align-items: start;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 260px 1fr;
+}
+
+.forum-sidebar,
+.composer-card,
+.thread-row {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+
+.forum-sidebar {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.forum-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 4px;
+  padding: 14px;
+  text-align: left;
+}
+
+.forum-tab span,
+.forum-state,
+.thread-meta,
+.thread-detail-footer span {
+  color: var(--muted);
+}
+
+.forum-tab-active {
+  background: #f1efff;
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+.forum-main,
+.thread-list,
+.thread-form {
+  display: grid;
+  gap: 16px;
+}
+
+.composer-card {
+  padding: 22px;
+}
+
+.composer-card h2 {
+  margin: 0 0 8px;
+}
+
+.composer-card p,
+.thread-row p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.thread-form {
+  margin-top: 18px;
+}
+
+.thread-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.thread-form input,
+.thread-form textarea {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  padding: 13px 14px;
+}
+
+.thread-form textarea {
+  resize: vertical;
+}
+
+.thread-form input:focus,
+.thread-form textarea:focus {
+  border-color: var(--accent);
+  outline: 3px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.thread-form input:disabled,
+.thread-form textarea:disabled {
+  background: #f8f8fb;
+  cursor: not-allowed;
+}
+
+.thread-row {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.thread-row strong {
+  font-size: 1.15rem;
+}
+
+.thread-detail {
+  white-space: pre-wrap;
+}
+
+.thread-content {
+  border-top: 1px solid var(--line);
+  line-height: 1.9;
+  margin-top: 26px;
+  padding-top: 26px;
+}
+
+.thread-detail-footer {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 20px;
+}
+
+.form-success {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  color: #166534;
+  margin: 0;
+  padding: 12px 14px;
+}
+
 @media (max-width: 720px) {
   .card-grid {
     grid-template-columns: 1fr;
@@ -365,5 +507,13 @@ a {
 
   .profile-summary {
     grid-template-columns: 1fr;
+  }
+
+  .forum-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .forum-sidebar {
+    grid-template-columns: 1fr 1fr;
   }
 }

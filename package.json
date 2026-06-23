@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prisma:generate": "pnpm --filter @turalk/api prisma:generate",
-    "prisma:validate": "pnpm --filter @turalk/api prisma:validate"
+    "prisma:validate": "pnpm --filter @turalk/api prisma:validate",
+    "prisma:seed": "pnpm --filter @turalk/api prisma:seed"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

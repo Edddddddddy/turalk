@@ -47,14 +47,11 @@
 ```json
 {
   "items": [],
-  "pageInfo": {
-    "nextCursor": null,
-    "hasMore": false
-  }
+  "nextCursor": null
 }
 ```
 
-查询参数使用 `cursor`、`limit`；`limit` 必须有默认值和上限。管理后台需要跳页时可使用 `page`、`pageSize`，响应同时返回 `total`。
+查询参数使用 `cursor`、`limit`；`limit` 必须有默认值和上限。客户端通过 `nextCursor !== null` 判断是否还有下一页。管理后台需要跳页时可使用 `page`、`pageSize`，响应同时返回 `total`。
 
 ## 鉴权
 
@@ -208,3 +205,88 @@
 ```
 
 `outcome` 可为 `verified` 或 `rejected`。该接口仅用于本地/开发阶段模拟 provider 回调；真实 provider 接入时必须加入回调验签、幂等键、供应商响应脱敏和独立审计。
+
+## Forum Core API
+
+当前实现论坛分区读取、帖子列表、帖子详情和基础发帖。不实现评论、举报审核、搜索索引、图片上传或富文本。
+
+### List Forums
+
+`GET /api/forums`
+
+公开接口。只返回启用中的分区，并按 `position` 排序。
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "forum-id",
+      "slug": "general",
+      "name": "综合讨论",
+      "description": "闲聊与综合话题",
+      "position": 0,
+      "threadCount": 12
+    }
+  ],
+  "error": null
+}
+```
+
+### List Threads
+
+`GET /api/threads?forumSlug=general&limit=20&cursor=thread-id`
+
+公开接口。只返回 `PUBLISHED` 且未软删除的帖子，按创建时间倒序。响应中的作者只包含公开昵称、公开用户 ID 和头像。
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "thread-id",
+        "title": "活动剧情讨论",
+        "contentPreview": "正文摘要",
+        "status": "PUBLISHED",
+        "forum": {
+          "slug": "general",
+          "name": "综合讨论"
+        },
+        "author": {
+          "id": "public-user-id",
+          "displayName": "旅行者",
+          "avatarUrl": null
+        },
+        "commentCount": 0,
+        "createdAt": "2026-06-23T00:00:00.000Z",
+        "updatedAt": "2026-06-23T00:00:00.000Z"
+      }
+    ],
+    "nextCursor": null
+  },
+  "error": null
+}
+```
+
+### Get Thread
+
+`GET /api/threads/:threadId`
+
+公开接口。不可见或不存在的帖子返回 `THREAD_NOT_FOUND`。
+
+### Create Thread
+
+`POST /api/threads`
+
+需要 `Authorization: Bearer <access-token>`，且用户实名状态必须为 `VERIFIED`。
+
+```json
+{
+  "forumSlug": "general",
+  "title": "活动剧情讨论",
+  "content": "帖子正文"
+}
+```
+
+成功返回 `201` 和帖子详情，并写入 `THREAD_CREATED` 审计事件。未登录返回 `AUTH_REQUIRED`，未实名返回 `THREAD_REQUIRES_VERIFIED_IDENTITY`，分区不存在或停用返回 `FORUM_NOT_FOUND`。
