@@ -4,13 +4,19 @@
 
 建立 pnpm monorepo、NestJS API、Next.js Web、React Admin、Prisma schema、Docker Compose、质量工具与基础文档。验收标准是依赖可安装、项目可构建、schema 与 Compose 配置可验证。
 
-## 第 2 次迭代：用户注册登录
+## 第 2 次迭代：用户注册登录后端
 
-**当前迭代。** Backend foundation complete：已实现邮箱注册登录、Argon2id 密码哈希、JWT access/refresh token、refresh token 轮换与 hash 存储、登出、`/auth/me`、账号状态检查和最小审计记录。
+**已完成。** Backend foundation complete：已实现邮箱注册登录、Argon2id 密码哈希、JWT access/refresh token、refresh token 轮换与 hash 存储、登出、`/auth/me`、账号状态检查和最小审计记录。
 
 Migration/test/rate-limit hardening complete：已补充 Prisma baseline 与 auth 增量 migration、PasswordService/TokenService/AuthService 单元测试、auth 基础限流和真实 PostgreSQL auth smoke test。
 
 本次不实现手机号、短信验证码、OAuth、第三方登录、前端表单或 Redis 分布式限流。生产前仍需补充更严格的多实例限流、持久化测试环境与 CI。
+
+## 第 2.5 次迭代：用户注册登录前端
+
+**当前迭代。** 实现 Web 端登录、注册、登出、当前用户读取、基础页面保护、导航栏认证状态和集中式 API client/token storage。
+
+当前 token 临时存储在浏览器 `localStorage`，仅用于开发阶段 MVP。生产前需要迁移到 httpOnly secure cookie + CSRF 防护或更严格的 session 方案。
 
 ## 第 3 次迭代：实名认证接口抽象
 

@@ -1,1 +1,9 @@
-export type { CommentDTO, ThreadDTO, UserDTO } from '@turalk/types';
+export type {
+  AuthResponseDTO,
+  AuthTokensDTO,
+  AuthUserDTO,
+  CommentDTO,
+  ThreadDTO,
+  UserDTO,
+  UserStatus,
+} from '@turalk/types';
