@@ -14,13 +14,13 @@ Migration/test/rate-limit hardening complete：已补充 Prisma baseline 与 aut
 
 ## 第 2.5 次迭代：用户注册登录前端
 
-**当前迭代。** 实现 Web 端登录、注册、登出、当前用户读取、基础页面保护、导航栏认证状态和集中式 API client/token storage。
+**已完成。** 实现 Web 端登录、注册、登出、当前用户读取、基础页面保护、导航栏认证状态和集中式 API client/token storage。
 
 当前 token 临时存储在浏览器 `localStorage`，仅用于开发阶段 MVP。生产前需要迁移到 httpOnly secure cookie + CSRF 防护或更严格的 session 方案。
 
 ## 第 3 次迭代：实名认证接口抽象
 
-定义 identity provider 接口、回调验签、幂等状态机与模拟提供商。只保存 hash、provider token 和核验结果，不接入生产供应商或真实证件测试数据。
+**当前迭代。** 定义 identity provider 接口与模拟提供商，打通实名状态查询、mock start/complete、最小审计和前端说明页联调。只保存 hash、provider token 和核验结果，不接入生产供应商或真实证件测试数据。
 
 ## 第 4 次迭代：论坛分区与发帖
 

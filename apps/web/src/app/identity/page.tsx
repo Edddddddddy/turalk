@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { IdentityPanel } from '../../features/identity';
+
 export const metadata: Metadata = { title: '实名认证说明' };
 
 export default function IdentityPage() {
@@ -14,6 +16,7 @@ export default function IdentityPage() {
         当前尚未接入真实实名认证服务。后续会采用“后台实名、前台匿名”的方式，
         但本页面不会采集身份证号，也不会提供身份证输入框。
       </p>
+      <IdentityPanel />
     </section>
   );
 }
