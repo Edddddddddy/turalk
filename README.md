@@ -48,6 +48,8 @@ pnpm prisma:generate
 pnpm dev
 ```
 
+启动前请为 `.env` 中的 `JWT_ACCESS_SECRET`、`JWT_REFRESH_SECRET` 和 `PASSWORD_HASH_PEPPER` 分别生成至少 32 字符的独立随机值。不要复用或提交这些值。
+
 默认地址：
 
 - Web: <http://localhost:3000>
@@ -77,11 +79,36 @@ docker compose --env-file .env -f infra/docker/docker-compose.yml ps
 docker compose --env-file .env -f infra/docker/docker-compose.yml down
 ```
 
+## 数据库迁移
+
+首次启动 PostgreSQL 后执行：
+
+```bash
+DATABASE_URL="postgresql://turalk:change-me-for-local-development@localhost:5432/turalk?schema=public" \
+  pnpm --filter @turalk/api exec prisma migrate deploy
+pnpm prisma:generate
+```
+
+本地开发生成新 migration 时使用 `pnpm --filter @turalk/api prisma:migrate:dev --name <migration_name>`。不要执行会清空数据的 reset 命令，除非这是明确的本地一次性测试库。
+
+## Auth 本地验证
+
+API 启动后可用 `example.com` 测试邮箱验证基础流程：
+
+1. `POST http://localhost:3001/api/auth/register`
+2. `POST http://localhost:3001/api/auth/login`
+3. `GET http://localhost:3001/api/auth/me`
+4. `POST http://localhost:3001/api/auth/refresh`
+5. `POST http://localhost:3001/api/auth/logout`
+
+响应不得包含 `passwordHash` 或 `refreshTokenHash`。当前 auth 限流是单实例内存限流，生产部署前需要 Redis 或网关级限流。
+
 ## 质量检查
 
 ```bash
 pnpm format:check
 pnpm lint
+pnpm test
 pnpm typecheck
 pnpm build
 pnpm prisma:validate

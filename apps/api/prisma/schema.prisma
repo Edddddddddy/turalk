@@ -76,14 +76,16 @@ model User {
 }
 
 model UserAuth {
-  id           String    @id @default(cuid())
-  userId       String    @unique
-  email        String    @unique
-  passwordHash String
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  email             String    @unique
+  passwordHash      String
+  passwordUpdatedAt DateTime  @default(now())
+  refreshTokenHash  String?
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_auth")
 }

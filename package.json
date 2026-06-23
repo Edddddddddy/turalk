@@ -12,6 +12,7 @@
     "dev": "pnpm --parallel --filter './apps/*' dev",
     "build": "pnpm --recursive --if-present build",
     "lint": "eslint .",
+    "test": "pnpm --recursive --if-present test",
     "typecheck": "pnpm --recursive --if-present typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
