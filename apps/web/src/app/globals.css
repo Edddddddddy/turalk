@@ -65,13 +65,47 @@ a {
   gap: 24px;
 }
 
+.nav-auth {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+}
+
+.nav-auth a,
+.nav-button,
 .nav-links a {
   color: var(--muted);
   font-size: 0.92rem;
 }
 
+.nav-auth a:hover,
+.nav-button:hover,
 .nav-links a:hover {
   color: var(--text);
+}
+
+.nav-button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.nav-muted,
+.nav-user {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.nav-user {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.nav-strong {
+  color: var(--accent-dark) !important;
+  font-weight: 800;
 }
 
 .page-shell {
@@ -216,9 +250,85 @@ a {
   margin-top: 16px;
 }
 
+.auth-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.auth-form label span {
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.auth-form input {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  padding: 13px 14px;
+}
+
+.auth-form input:focus {
+  border-color: var(--accent);
+  outline: 3px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.auth-form button {
+  justify-self: start;
+}
+
+.auth-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.form-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 12px;
+  color: #9f1239 !important;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+.form-hint {
+  font-size: 0.95rem !important;
+  margin: 0;
+}
+
+.profile-summary {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  display: grid;
+  gap: 10px 18px;
+  grid-template-columns: max-content 1fr;
+  margin: 26px 0;
+  padding: 18px;
+}
+
+.profile-summary span {
+  color: var(--muted);
+}
+
+.profile-summary strong {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 720px) {
   .card-grid {
     grid-template-columns: 1fr;
+  }
+
+  .nav-shell {
+    align-items: flex-start;
+    height: auto;
+    padding-block: 16px;
   }
 
   .nav-links {
@@ -229,7 +339,17 @@ a {
     display: none;
   }
 
+  .nav-auth {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .page-shell {
     padding-block: 36px;
+  }
+
+  .profile-summary {
+    grid-template-columns: 1fr;
   }
 }

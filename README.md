@@ -64,6 +64,14 @@ pnpm --filter @turalk/api dev
 pnpm --filter @turalk/admin dev
 ```
 
+Web 端 API 地址集中配置为：
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
+```
+
+仓库仍兼容早期的 `NEXT_PUBLIC_API_URL`，但新配置优先使用 `NEXT_PUBLIC_API_BASE_URL`。
+
 ## Docker 启动
 
 先确认 `.env` 中的本地数据库密码已经修改，然后运行：
@@ -102,6 +110,18 @@ API 启动后可用 `example.com` 测试邮箱验证基础流程：
 5. `POST http://localhost:3001/api/auth/logout`
 
 响应不得包含 `passwordHash` 或 `refreshTokenHash`。当前 auth 限流是单实例内存限流，生产部署前需要 Redis 或网关级限流。
+
+Web + API 手动验证：
+
+```bash
+docker compose --env-file .env -f infra/docker/docker-compose.yml up -d postgres redis
+DATABASE_URL="postgresql://turalk:change-me-for-local-development@localhost:5432/turalk?schema=public" \
+  pnpm --filter @turalk/api exec prisma migrate deploy
+pnpm --filter @turalk/api dev
+pnpm --filter @turalk/web dev
+```
+
+打开 <http://localhost:3000/auth/register>，使用 `auth-ui-test@example.com` 和测试昵称注册，随后验证登录、刷新页面保持登录、访问 <http://localhost:3000/profile>、退出登录。不要使用真实邮箱、手机号或身份证数据。
 
 ## 质量检查
 

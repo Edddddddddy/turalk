@@ -134,6 +134,8 @@
 
 请求头：`Authorization: Bearer <access-token>`。只返回公开 ID、昵称、头像和账号状态，不返回邮箱、内部用户 ID 或任何凭据字段。
 
+前端当前通过 `NEXT_PUBLIC_API_BASE_URL` 或兼容的 `NEXT_PUBLIC_API_URL` 读取 API base URL。Web 端只消费统一 envelope 中的 `data`，错误时使用 `error.code` 和 `error.message` 做用户可读提示。
+
 ### 当前限制
 
 - 当前仅支持邮箱密码认证，不支持手机号、短信验证码、OAuth 或第三方登录。
