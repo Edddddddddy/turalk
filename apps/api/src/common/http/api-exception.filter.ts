@@ -41,9 +41,11 @@ export class ApiExceptionFilter implements ExceptionFilter {
           body?.code ??
           (status === HttpStatus.BAD_REQUEST
             ? 'VALIDATION_FAILED'
-            : isHttpException
-              ? 'REQUEST_FAILED'
-              : 'INTERNAL_ERROR'),
+            : status === HttpStatus.TOO_MANY_REQUESTS
+              ? 'RATE_LIMITED'
+              : isHttpException
+                ? 'REQUEST_FAILED'
+                : 'INTERNAL_ERROR'),
         details: messages ? { messages } : null,
         message:
           typeof body?.message === 'string'

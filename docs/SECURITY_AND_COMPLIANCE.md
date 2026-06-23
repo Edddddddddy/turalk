@@ -22,6 +22,8 @@
 - refresh token 只保存 keyed hash，token 轮换后旧值失效；access/refresh JWT 使用不同 secret。
 - JWT secret 和 `PASSWORD_HASH_PEPPER` 只通过环境变量或密钥管理服务注入，绝不提交真实值。
 - 登录失败统一返回模糊错误，不透露邮箱是否存在、密码是否错误或账号具体状态。
+- `register`、`login`、`refresh` 当前使用单实例内存限流，配置来自环境变量；生产环境仍需要 Redis、网关或边缘层限流，避免多实例绕过。
+- 限流错误使用统一 envelope 和 `RATE_LIMITED` 业务码，不返回内部计数器或用户状态。
 - provider token 和其他必要敏感字段需要应用层加密。
 - API 对输入执行白名单验证，对输出使用显式 DTO，避免意外字段泄漏。
 - 日志进行字段级脱敏，禁止记录凭据、证件信息、完整 token 和未脱敏请求体。

@@ -116,6 +116,16 @@
 
 刷新采用 rotation：成功后返回新的 access/refresh token pair，并使旧 refresh token 失效。数据库只保存 refresh token 的 hash。
 
+### Auth Rate Limit
+
+`register`、`login`、`refresh` 已接入单实例内存限流，默认配置：
+
+- `AUTH_REGISTER_TTL_SECONDS=60`、`AUTH_REGISTER_LIMIT=5`
+- `AUTH_LOGIN_TTL_SECONDS=60`、`AUTH_LOGIN_LIMIT=10`
+- `AUTH_REFRESH_TTL_SECONDS=60`、`AUTH_REFRESH_LIMIT=20`
+
+命中限流返回 HTTP `429`，错误 envelope 使用 `RATE_LIMITED`。当前限流不依赖 Redis，也不跨实例共享；生产部署前需要在网关或 Redis-backed storage 上补充分布式限流。
+
 ### Logout
 
 请求头：`Authorization: Bearer <access-token>`。成功后清除当前用户保存的 refresh token hash。
@@ -129,4 +139,16 @@
 - 当前仅支持邮箱密码认证，不支持手机号、短信验证码、OAuth 或第三方登录。
 - 当前 refresh token 采用单会话槽位，后一次登录会使前一次 refresh token 失效。
 - Logout 会撤销 refresh token，但已签发的 access token 仍可使用至过期（默认最长 15 分钟）。
-- 分布式限流尚未实现；生产部署前必须为 register/login/refresh 增加严格限流。
+- 当前已有单实例基础限流；分布式限流尚未实现。
+
+### Auth Smoke Test
+
+本地 PostgreSQL 可用时，推荐在 migration 后用测试邮箱跑最小真实数据库流程：
+
+1. `POST /api/auth/register`
+2. `POST /api/auth/login`
+3. `GET /api/auth/me`
+4. `POST /api/auth/refresh`
+5. `POST /api/auth/logout`
+
+检查响应中不得出现 `passwordHash` 或 `refreshTokenHash`，并确认数据库中的 `refreshTokenHash` 是 64 位 hex hash，而不是明文 refresh token。测试数据使用 `example.com` 邮箱，不使用真实个人信息。

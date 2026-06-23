@@ -6,9 +6,11 @@
 
 ## 第 2 次迭代：用户注册登录
 
-**当前迭代。** 实现邮箱注册登录、Argon2id 密码哈希、JWT access/refresh token、refresh token 轮换与 hash 存储、登出、`/auth/me`、账号状态检查和最小审计记录。
+**当前迭代。** Backend foundation complete：已实现邮箱注册登录、Argon2id 密码哈希、JWT access/refresh token、refresh token 轮换与 hash 存储、登出、`/auth/me`、账号状态检查和最小审计记录。
 
-本次不实现手机号、短信验证码、OAuth、第三方登录、前端表单、Redis 分布式限流或数据库 e2e 测试。后续需补充 PasswordService/AuthService 单元测试，并在基础设施可用后执行 migration 和认证集成测试。
+Migration/test/rate-limit hardening complete：已补充 Prisma baseline 与 auth 增量 migration、PasswordService/TokenService/AuthService 单元测试、auth 基础限流和真实 PostgreSQL auth smoke test。
+
+本次不实现手机号、短信验证码、OAuth、第三方登录、前端表单或 Redis 分布式限流。生产前仍需补充更严格的多实例限流、持久化测试环境与 CI。
 
 ## 第 3 次迭代：实名认证接口抽象
 
