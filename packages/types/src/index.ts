@@ -33,6 +33,22 @@ export interface AuthResponseDTO extends AuthTokensDTO {
   user: AuthUserDTO;
 }
 
+export type VerificationStatus =
+  | 'NOT_STARTED'
+  | 'PENDING'
+  | 'VERIFIED'
+  | 'REJECTED'
+  | 'EXPIRED';
+
+export interface IdentityVerificationStatusDTO {
+  expiresAt: string | null;
+  provider: string | null;
+  rejectionReasonCode: string | null;
+  status: VerificationStatus;
+  updatedAt: string | null;
+  verifiedAt: string | null;
+}
+
 export interface ThreadDTO {
   id: string;
   forumId: string;

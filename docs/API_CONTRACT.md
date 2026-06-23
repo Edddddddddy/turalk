@@ -154,3 +154,57 @@
 5. `POST /api/auth/logout`
 
 检查响应中不得出现 `passwordHash` 或 `refreshTokenHash`，并确认数据库中的 `refreshTokenHash` 是 64 位 hex hash，而不是明文 refresh token。测试数据使用 `example.com` 邮箱，不使用真实个人信息。
+
+## Identity API
+
+当前仅实现 mock provider 抽象，用于打通后端实名状态机和前端联调。不接入真实供应商，不采集身份证号、身份证照片或生物识别原文。
+
+所有 identity 路由都需要 `Authorization: Bearer <access-token>`。
+
+### Get Status
+
+`GET /api/identity/status`
+
+返回：
+
+```json
+{
+  "success": true,
+  "data": {
+    "provider": "mock",
+    "status": "PENDING",
+    "verifiedAt": null,
+    "expiresAt": null,
+    "rejectionReasonCode": null,
+    "updatedAt": "2026-06-23T00:00:00.000Z"
+  },
+  "error": null
+}
+```
+
+未开始时 `provider`、时间字段为 `null`，`status` 为 `NOT_STARTED`。响应不得包含 `providerSubjectToken`、`identityHash` 或任何实名原文。
+
+### Start Mock Verification
+
+`POST /api/identity/mock/start`
+
+```json
+{
+  "provider": "mock",
+  "consentAccepted": true
+}
+```
+
+服务端生成 mock provider token 和非 PII hash，并保存 `PENDING` 状态。该 token/hash 只进入数据库，不返回前端。
+
+### Complete Mock Verification
+
+`POST /api/identity/mock/complete`
+
+```json
+{
+  "outcome": "verified"
+}
+```
+
+`outcome` 可为 `verified` 或 `rejected`。该接口仅用于本地/开发阶段模拟 provider 回调；真实 provider 接入时必须加入回调验签、幂等键、供应商响应脱敏和独立审计。

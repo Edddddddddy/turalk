@@ -26,6 +26,8 @@
 - 限流错误使用统一 envelope 和 `RATE_LIMITED` 业务码，不返回内部计数器或用户状态。
 - Web 端当前使用 `localStorage` 临时保存 access/refresh token，仅作为开发阶段 MVP；该方案会受到 XSS 影响，生产环境应迁移到 httpOnly secure cookie、`Secure`、`SameSite`、CSRF 防护或更严格的服务端 session。
 - 前端不得采集身份证号、身份证照片或其他实名原文；实名认证页在接入 provider 前只展示说明，不提供证件输入框。
+- 当前 identity mock provider 只生成非 PII 的 provider token 和 hash，用于开发联调；这些字段不得返回前端或普通管理员视图。
+- 真实 identity provider 接入前必须补充回调验签、幂等处理、provider 响应脱敏、独立权限和独立审计。
 - provider token 和其他必要敏感字段需要应用层加密。
 - API 对输入执行白名单验证，对输出使用显式 DTO，避免意外字段泄漏。
 - 日志进行字段级脱敏，禁止记录凭据、证件信息、完整 token 和未脱敏请求体。

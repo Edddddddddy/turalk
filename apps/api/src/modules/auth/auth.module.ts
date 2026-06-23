@@ -17,7 +17,7 @@ function readRateLimit(config: ConfigService, key: string): number {
 
 @Module({
   controllers: [AuthController],
-  exports: [JwtAuthGuard, TokenService],
+  exports: [AuthRepository, JwtAuthGuard, TokenService],
   imports: [
     AuditModule,
     ConfigModule,

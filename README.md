@@ -123,6 +123,15 @@ pnpm --filter @turalk/web dev
 
 打开 <http://localhost:3000/auth/register>，使用 `auth-ui-test@example.com` 和测试昵称注册，随后验证登录、刷新页面保持登录、访问 <http://localhost:3000/profile>、退出登录。不要使用真实邮箱、手机号或身份证数据。
 
+实名认证 mock 验证：
+
+1. 登录 Web。
+2. 打开 <http://localhost:3000/identity>。
+3. 点击“开始模拟核验”。
+4. 点击“模拟通过”或“模拟拒绝”。
+
+当前流程只使用 mock provider，不接真实供应商，不采集身份证号或身份证照片。真实 provider 接入前需要完成回调验签、幂等、防重放、供应商响应脱敏和合规评审。
+
 ## 质量检查
 
 ```bash
