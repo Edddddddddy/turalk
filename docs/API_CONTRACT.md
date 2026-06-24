@@ -208,7 +208,7 @@
 
 ## Forum Core API
 
-当前实现论坛分区读取、帖子列表、帖子详情和基础发帖。不实现评论、举报审核、搜索索引、图片上传或富文本。
+当前实现论坛分区读取、帖子列表、帖子详情和基础发帖。评论拆到 Comments API；仍不实现举报审核、搜索索引、图片上传或富文本。
 
 ### List Forums
 
@@ -290,3 +290,75 @@
 ```
 
 成功返回 `201` 和帖子详情，并写入 `THREAD_CREATED` 审计事件。未登录返回 `AUTH_REQUIRED`，未实名返回 `THREAD_REQUIRES_VERIFIED_IDENTITY`，分区不存在或停用返回 `FORUM_NOT_FOUND`。
+
+## Comments API
+
+当前实现帖子评论、楼中楼回复、cursor 分页和作者本人软删除。评论内容按普通文本处理；前端使用 React 默认转义渲染，不接富文本或图片上传。
+
+### List Comments
+
+`GET /api/comments?threadId=thread-id&limit=50&cursor=comment-id`
+
+公开接口。只返回 `PUBLISHED` 且未软删除的评论，按创建时间升序。响应中的作者只包含公开昵称、公开用户 ID 和头像。
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "comment-id",
+        "threadId": "thread-id",
+        "parentId": null,
+        "content": "评论正文",
+        "status": "PUBLISHED",
+        "author": {
+          "id": "public-user-id",
+          "displayName": "旅行者",
+          "avatarUrl": null
+        },
+        "createdAt": "2026-06-24T00:00:00.000Z",
+        "updatedAt": "2026-06-24T00:00:00.000Z"
+      }
+    ],
+    "nextCursor": null
+  },
+  "error": null
+}
+```
+
+帖子不存在或不可见返回 `THREAD_NOT_FOUND`。
+
+### Create Comment
+
+`POST /api/comments`
+
+需要 `Authorization: Bearer <access-token>`，且用户实名状态必须为 `VERIFIED`。
+
+```json
+{
+  "threadId": "thread-id",
+  "parentId": "parent-comment-id",
+  "content": "评论正文"
+}
+```
+
+`parentId` 可省略；提供时必须是同一帖子下仍可见的评论。成功返回 `201` 和评论详情，并写入 `COMMENT_CREATED` 审计事件。未实名返回 `COMMENT_REQUIRES_VERIFIED_IDENTITY`，父评论不可见或跨帖返回 `COMMENT_PARENT_NOT_FOUND`。
+
+### Delete Comment
+
+`DELETE /api/comments/:commentId`
+
+需要 `Authorization: Bearer <access-token>`。当前只允许作者本人软删除自己的可见评论，成功返回：
+
+```json
+{
+  "success": true,
+  "data": {
+    "deleted": true
+  },
+  "error": null
+}
+```
+
+删除操作会将评论标记为 `DELETED` 并设置 `deletedAt`，同时写入 `COMMENT_DELETED` 审计事件。评论不存在、不可见或不是当前用户发布时统一返回 `COMMENT_NOT_FOUND`。
