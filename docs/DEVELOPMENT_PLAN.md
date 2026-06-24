@@ -20,11 +20,13 @@ Migration/test/rate-limit hardening complete：已补充 Prisma baseline 与 aut
 
 ## 第 3 次迭代：实名认证接口抽象
 
-**当前迭代。** 定义 identity provider 接口与模拟提供商，打通实名状态查询、mock start/complete、最小审计和前端说明页联调。只保存 hash、provider token 和核验结果，不接入生产供应商或真实证件测试数据。
+**已完成。** 定义 identity provider 接口与模拟提供商，打通实名状态查询、mock start/complete、最小审计和前端说明页联调。只保存 hash、provider token 和核验结果，不接入生产供应商或真实证件测试数据。
 
 ## 第 4 次迭代：论坛分区与发帖
 
-实现分区查询、帖子创建与读取、内容状态、软删除、分页和公开用户展示。建立基础权限与审计事件。
+**当前迭代。** 实现分区查询、默认分区 seed、帖子创建与读取、内容状态、软删除可见性、cursor 分页和公开用户展示。发帖需要登录且 mock 实名状态为 `VERIFIED`，并记录最小 `THREAD_CREATED` 审计事件。
+
+本次不实现评论、举报审核、搜索索引、复杂富文本、图片上传或管理员分区管理。
 
 ## 第 5 次迭代：评论系统
 

@@ -1,4 +1,11 @@
 import { Module } from '@nestjs/common';
 
-@Module({})
+import { ForumsController } from './forums.controller';
+import { ForumsRepository } from './forums.repository';
+import { ForumsService } from './forums.service';
+
+@Module({
+  controllers: [ForumsController],
+  providers: [ForumsRepository, ForumsService],
+})
 export class ForumsModule {}

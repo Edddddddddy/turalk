@@ -2,7 +2,7 @@
 
 Turalk 是面向二游玩家的实名论坛：后台完成身份核验，前台仅展示社区身份。第一版采用模块化单体，优先保持开发效率和事务一致性，同时为后续服务拆分保留清晰边界。
 
-当前仓库仅包含工程骨架和占位页面，尚未实现注册登录、发帖评论、真实身份核验或治理业务。
+当前仓库已经具备工程骨架、邮箱注册登录、mock 实名认证 provider、论坛分区读取和基础发帖/帖子详情流程。评论、真实身份核验供应商、举报审核、搜索和通知仍未实现。
 
 ## 技术栈
 
@@ -95,6 +95,7 @@ docker compose --env-file .env -f infra/docker/docker-compose.yml down
 DATABASE_URL="postgresql://turalk:change-me-for-local-development@localhost:5432/turalk?schema=public" \
   pnpm --filter @turalk/api exec prisma migrate deploy
 pnpm prisma:generate
+pnpm prisma:seed
 ```
 
 本地开发生成新 migration 时使用 `pnpm --filter @turalk/api prisma:migrate:dev --name <migration_name>`。不要执行会清空数据的 reset 命令，除非这是明确的本地一次性测试库。
@@ -132,6 +133,16 @@ pnpm --filter @turalk/web dev
 
 当前流程只使用 mock provider，不接真实供应商，不采集身份证号或身份证照片。真实 provider 接入前需要完成回调验签、幂等、防重放、供应商响应脱敏和合规评审。
 
+论坛核心验证：
+
+1. 执行 `pnpm prisma:seed` 初始化默认分区。
+2. 登录 Web 并在 <http://localhost:3000/identity> 完成 mock 通过。
+3. 打开 <http://localhost:3000/forums>。
+4. 选择分区、填写标题和正文并发布。
+5. 点击帖子进入详情页。
+
+发帖接口会在服务端校验登录态和实名状态。前台只展示公开昵称，不返回内部用户 ID 或实名字段。
+
 ## 质量检查
 
 ```bash
@@ -145,10 +156,8 @@ pnpm prisma:validate
 
 ## 后续计划
 
-1. 用户注册登录
-2. 实名认证提供商接口抽象
-3. 论坛分区、帖子与评论
-4. 举报、人工审核与审计闭环
-5. 搜索、通知和二游特色功能
+1. 评论系统与楼中楼
+2. 举报、人工审核与审计闭环
+3. 搜索、通知和二游特色功能
 
 完整路线见 [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md)，Git 规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。

@@ -49,14 +49,43 @@ export interface IdentityVerificationStatusDTO {
   verifiedAt: string | null;
 }
 
-export interface ThreadDTO {
+export type ContentStatus =
+  | 'DRAFT'
+  | 'PUBLISHED'
+  | 'UNDER_REVIEW'
+  | 'HIDDEN'
+  | 'DELETED';
+
+export interface ForumDTO {
+  description: string | null;
   id: string;
-  forumId: string;
+  name: string;
+  position: number;
+  slug: string;
+  threadCount: number;
+}
+
+export interface ThreadDTO {
   author: UserDTO;
-  title: string;
+  commentCount: number;
   content: string;
+  contentPreview: string;
   createdAt: string;
+  forum: {
+    name: string;
+    slug: string;
+  };
+  id: string;
+  status: ContentStatus;
+  title: string;
   updatedAt: string;
+}
+
+export type ThreadListItemDTO = Omit<ThreadDTO, 'content'>;
+
+export interface PaginatedDTO<T> {
+  items: T[];
+  nextCursor: string | null;
 }
 
 export interface CommentDTO {
