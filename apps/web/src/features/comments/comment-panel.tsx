@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CommentDTO } from '@turalk/types';
 
 import { useAuth } from '../auth';
+import { ReportButton } from '../reports';
 import { commentsApi } from '../../lib/api/comments';
 import { getAccessToken } from '../../lib/auth/token-storage';
 
@@ -157,6 +158,11 @@ export function CommentPanel({ threadId }: CommentPanelProps) {
               删除
             </button>
           ) : null}
+          <ReportButton
+            targetId={comment.id}
+            targetLabel="评论"
+            targetType="COMMENT"
+          />
         </div>
         {(repliesByParent.get(comment.id) ?? []).map((reply) =>
           renderComment(reply, true),

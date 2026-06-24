@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { ThreadDTO } from '@turalk/types';
 
 import { CommentPanel } from '../comments';
+import { ReportButton } from '../reports';
 import { threadsApi } from '../../lib/api/threads';
 
 interface ThreadDetailProps {
@@ -54,6 +55,11 @@ export function ThreadDetail({ threadId }: ThreadDetailProps) {
           <Link className="button" href="/forums">
             返回论坛
           </Link>
+          <ReportButton
+            targetId={thread.id}
+            targetLabel="帖子"
+            targetType="THREAD"
+          />
           <span>举报和审核入口将在后续迭代接入。</span>
         </div>
       </article>
