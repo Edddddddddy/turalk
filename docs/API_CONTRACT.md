@@ -362,3 +362,52 @@
 ```
 
 删除操作会将评论标记为 `DELETED` 并设置 `deletedAt`，同时写入 `COMMENT_DELETED` 审计事件。评论不存在、不可见或不是当前用户发布时统一返回 `COMMENT_NOT_FOUND`。
+
+## Reports API
+
+当前实现帖子和评论举报入口。举报会进入 `Report` 表，状态默认为 `OPEN`，并写入 `REPORT_CREATED` 审计事件。审核队列、处置动作、管理员 RBAC 和申诉流程会在后续 moderation 迭代实现。
+
+本轮不实现用户举报：现有 `Report` 模型没有 `targetUserId` 字段，不能把用户目标塞进 `details` 这种非结构化字段里。用户举报需要和管理员权限、用户处置动作一起设计。
+
+### Create Report
+
+`POST /api/reports`
+
+需要 `Authorization: Bearer <access-token>`，且用户实名状态必须为 `VERIFIED`。
+
+```json
+{
+  "targetType": "THREAD",
+  "targetId": "thread-id",
+  "reasonCode": "SPAM",
+  "details": "可选补充说明"
+}
+```
+
+`targetType` 当前只接受 `THREAD` 或 `COMMENT`。`reasonCode` 可选值：
+
+- `SPAM`
+- `HARASSMENT`
+- `ILLEGAL_CONTENT`
+- `PRIVACY_LEAK`
+- `OFF_TOPIC`
+- `OTHER`
+
+成功返回：
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "report-id",
+    "targetType": "THREAD",
+    "targetId": "thread-id",
+    "reasonCode": "SPAM",
+    "status": "OPEN",
+    "createdAt": "2026-06-24T00:00:00.000Z"
+  },
+  "error": null
+}
+```
+
+目标不存在、不可见或已软删除时返回 `REPORT_TARGET_NOT_FOUND`。未实名返回 `REPORT_REQUIRES_VERIFIED_IDENTITY`。同一用户对同一目标已有未处理举报时返回 `REPORT_ALREADY_OPEN`。`details` 不得包含身份证号、手机号、真实邮箱、token 或其他隐私/密钥。

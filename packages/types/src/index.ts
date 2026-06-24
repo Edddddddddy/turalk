@@ -98,3 +98,29 @@ export interface CommentDTO {
   threadId: string;
   updatedAt: string;
 }
+
+export type ReportStatus =
+  | 'OPEN'
+  | 'TRIAGED'
+  | 'UNDER_REVIEW'
+  | 'RESOLVED'
+  | 'DISMISSED';
+
+export type ReportTargetType = 'COMMENT' | 'THREAD' | 'USER';
+
+export type ReportReasonCode =
+  | 'SPAM'
+  | 'HARASSMENT'
+  | 'ILLEGAL_CONTENT'
+  | 'PRIVACY_LEAK'
+  | 'OFF_TOPIC'
+  | 'OTHER';
+
+export interface ReportDTO {
+  createdAt: string;
+  id: string;
+  reasonCode: ReportReasonCode;
+  status: ReportStatus;
+  targetId: string;
+  targetType: ReportTargetType;
+}
