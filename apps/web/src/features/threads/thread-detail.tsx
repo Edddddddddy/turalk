@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { ThreadDTO } from '@turalk/types';
 
+import { CommentPanel } from '../comments';
 import { threadsApi } from '../../lib/api/threads';
 
 interface ThreadDetailProps {
@@ -40,20 +41,23 @@ export function ThreadDetail({ threadId }: ThreadDetailProps) {
   }
 
   return (
-    <article className="thread-detail content-card">
-      <span className="eyebrow">Thread · {thread.forum.name}</span>
-      <h1>{thread.title}</h1>
-      <p className="thread-meta">
-        {thread.author.displayName} ·{' '}
-        {new Date(thread.createdAt).toLocaleString('zh-CN')}
-      </p>
-      <div className="thread-content">{thread.content}</div>
-      <div className="thread-detail-footer">
-        <Link className="button" href="/forums">
-          返回论坛
-        </Link>
-        <span>评论、举报和审核入口将在后续迭代接入。</span>
-      </div>
-    </article>
+    <>
+      <article className="thread-detail content-card">
+        <span className="eyebrow">Thread · {thread.forum.name}</span>
+        <h1>{thread.title}</h1>
+        <p className="thread-meta">
+          {thread.author.displayName} ·{' '}
+          {new Date(thread.createdAt).toLocaleString('zh-CN')}
+        </p>
+        <div className="thread-content">{thread.content}</div>
+        <div className="thread-detail-footer">
+          <Link className="button" href="/forums">
+            返回论坛
+          </Link>
+          <span>举报和审核入口将在后续迭代接入。</span>
+        </div>
+      </article>
+      <CommentPanel threadId={thread.id} />
+    </>
   );
 }

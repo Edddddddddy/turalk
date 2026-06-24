@@ -476,6 +476,69 @@ a {
   padding: 12px 14px;
 }
 
+.comments-card {
+  margin-top: 24px;
+}
+
+.comments-header h2 {
+  font-size: 1.5rem;
+  margin: 8px 0 0;
+}
+
+.comment-form,
+.comment-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.comment-form textarea {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  padding: 13px 14px;
+  resize: vertical;
+}
+
+.comment-form textarea:focus {
+  border-color: var(--accent);
+  outline: 3px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.comment-row {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.comment-reply {
+  background: #fafaff;
+  margin-left: 24px;
+  margin-top: 12px;
+}
+
+.comment-meta,
+.comment-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.comment-meta span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.comment-row p {
+  line-height: 1.75;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 720px) {
   .card-grid {
     grid-template-columns: 1fr;
@@ -515,5 +578,9 @@ a {
 
   .forum-sidebar {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .comment-reply {
+    margin-left: 10px;
   }
 }

@@ -89,11 +89,12 @@ export interface PaginatedDTO<T> {
 }
 
 export interface CommentDTO {
-  id: string;
-  threadId: string;
   author: UserDTO;
   content: string;
-  parentId: string | null;
   createdAt: string;
+  id: string;
+  parentId: string | null;
+  status: ContentStatus;
+  threadId: string;
   updatedAt: string;
 }
