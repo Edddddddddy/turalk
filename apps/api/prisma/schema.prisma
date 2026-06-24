@@ -54,6 +54,11 @@ enum ModerationActionType {
   BAN_USER
 }
 
+enum AdminRole {
+  MODERATOR
+  ADMIN
+}
+
 model User {
   id                   String                    @id @default(cuid())
   publicId             String                    @unique @default(cuid())
@@ -70,9 +75,28 @@ model User {
   reportsReviewed      Report[]                  @relation("ReportReviewer")
   moderationActions    ModerationAction[]        @relation("ModerationActor")
   auditLogs            AuditLog[]                @relation("AuditActor")
+  adminRoleAssignments AdminRoleAssignment[]      @relation("AdminRoleUser")
+  adminRolesGranted    AdminRoleAssignment[]      @relation("AdminRoleGrantedBy")
 
   @@index([status])
   @@map("users")
+}
+
+model AdminRoleAssignment {
+  id          String    @id @default(cuid())
+  userId      String
+  role        AdminRole
+  isActive    Boolean   @default(true)
+  grantedById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation("AdminRoleUser", fields: [userId], references: [id], onDelete: Cascade)
+  grantedBy   User?     @relation("AdminRoleGrantedBy", fields: [grantedById], references: [id], onDelete: SetNull)
+
+  @@unique([userId, role])
+  @@index([role, isActive])
+  @@index([grantedById, createdAt])
+  @@map("admin_role_assignments")
 }
 
 model UserAuth {

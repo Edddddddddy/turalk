@@ -124,3 +124,30 @@ export interface ReportDTO {
   targetId: string;
   targetType: ReportTargetType;
 }
+
+export type AdminRole = 'MODERATOR' | 'ADMIN';
+
+export interface AdminPublicUserDTO {
+  avatarUrl: string | null;
+  displayName: string;
+  id: string;
+}
+
+export interface AdminReportQueueItemDTO {
+  createdAt: string;
+  details: string | null;
+  id: string;
+  reasonCode: string;
+  reporter: AdminPublicUserDTO;
+  reviewedBy: AdminPublicUserDTO | null;
+  status: ReportStatus;
+  target: {
+    author: AdminPublicUserDTO | null;
+    id: string;
+    preview: string;
+    threadId: string | null;
+    title: string | null;
+    type: ReportTargetType;
+  };
+  updatedAt: string;
+}

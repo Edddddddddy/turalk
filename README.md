@@ -2,7 +2,7 @@
 
 Turalk 是面向二游玩家的实名论坛：后台完成身份核验，前台仅展示社区身份。第一版采用模块化单体，优先保持开发效率和事务一致性，同时为后续服务拆分保留清晰边界。
 
-当前仓库已经具备工程骨架、邮箱注册登录、mock 实名认证 provider、论坛分区读取、基础发帖/帖子详情和评论流程。真实身份核验供应商、举报审核、搜索和通知仍未实现。
+当前仓库已经具备工程骨架、邮箱注册登录、mock 实名认证 provider、论坛分区读取、基础发帖/帖子详情、评论流程、举报提交和只读审核队列基础能力。真实身份核验供应商、审核处置动作、搜索和通知仍未实现。
 
 ## 技术栈
 
@@ -162,6 +162,15 @@ pnpm --filter @turalk/web dev
 
 举报同样要求登录并完成 mock 实名。当前仅支持举报帖子和评论；用户举报、审核后台和处置动作将在权限模型梳理后实现。举报补充说明中不要填写身份证号、手机号、真实邮箱或 token。
 
+审核队列本地验证：
+
+1. 通过注册/登录创建一个测试管理员账号。
+2. 在本地数据库中为该用户插入 active `AdminRoleAssignment`，角色使用 `MODERATOR` 或 `ADMIN`。
+3. 使用该账号 access token 请求 `GET http://localhost:3001/api/admin/reports?status=OPEN`。
+4. 确认响应只包含公开用户 ID、昵称和头像，不包含邮箱、实名 hash、provider token、密码 hash 或 refresh token hash。
+
+当前没有公开的管理员授予接口，不要把管理员 ID 或密钥硬编码进代码。审核队列仅为只读；隐藏内容、处罚、封禁和申诉将在后续迭代设计后实现。
+
 ## 质量检查
 
 ```bash
@@ -175,7 +184,7 @@ pnpm prisma:validate
 
 ## 后续计划
 
-1. 审核后台、管理员 RBAC 与处置动作
+1. 审核动作状态机、管理后台 UI 与处置动作
 2. 搜索、通知和二游特色功能
 
 完整路线见 [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md)，Git 规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
