@@ -8,8 +8,8 @@
 - **forums**：论坛分区、排序和可见性规则。
 - **threads**：帖子生命周期、软删除和内容状态。
 - **comments**：评论与回复关系、软删除和内容状态。
-- **reports**：用户举报的创建、归类、状态流转与证据引用。
-- **moderation**：人工复核、处置动作、申诉扩展点与风控决策。
+- **reports**：用户举报的创建、归类、状态流转与证据引用；当前只开放帖子和评论举报，用户举报暂不开放。
+- **moderation**：人工复核、处置动作、申诉扩展点与风控决策；状态机和权限矩阵见 [MODERATION_FLOW.md](./MODERATION_FLOW.md)。
 - **notifications**：站内通知及未来邮件、推送通道。
 - **search**：索引投递、查询适配和搜索结果权限复核。
 - **media**：对象存储上传授权、媒体元数据和安全处理。
@@ -21,3 +21,5 @@
 模块不得直接导入其他模块的内部 controller、repository 或私有类型。同步依赖通过模块导出的 service/interface，异步副作用通过领域事件。`identity` 与 `audit` 属于高敏感域，调用方只能获取完成业务所需的最小结果。
 
 当前迭代只创建 NestJS module 边界。service、controller、领域事件和权限策略会在对应功能迭代中逐步加入。
+
+治理相关开发必须区分 `Report`、`ModerationAction` 和 `AuditLog`：`Report` 表示用户提交的复核请求，`ModerationAction` 表示业务处置决定，`AuditLog` 表示敏感访问或变更的安全审计流水。

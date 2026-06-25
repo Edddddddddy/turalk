@@ -184,7 +184,8 @@ pnpm prisma:validate
 
 ## 后续计划
 
-1. 审核动作状态机、管理后台 UI 与处置动作
-2. 搜索、通知和二游特色功能
+1. 按 [docs/MODERATION_FLOW.md](docs/MODERATION_FLOW.md) 实现最小审核动作接口
+2. 管理后台审核队列 UI、处置确认和审计入口
+3. 搜索、通知和二游特色功能
 
 完整路线见 [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md)，Git 规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。

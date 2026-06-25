@@ -416,6 +416,8 @@
 
 当前仅实现举报审核队列的只读基础能力，用于后续处置动作开发前确认 RBAC、分页、公开用户输出和审计边界。
 
+审核状态机、权限矩阵和下一轮动作限制以 [MODERATION_FLOW.md](./MODERATION_FLOW.md) 为准。实现处置接口前必须先确认该文档仍然适用。
+
 所有 admin 路由都需要 `Authorization: Bearer <access-token>`，并要求当前用户在 `AdminRoleAssignment` 中拥有 active 的 `MODERATOR` 或 `ADMIN` 角色。无管理员角色返回 HTTP `403` 和 `ADMIN_REQUIRED`。管理员角色暂不提供公开授予 API；本地开发可通过受控数据库操作临时授予。
 
 ### List Admin Reports
@@ -474,5 +476,7 @@
 
 - 当前没有管理员授予/撤销接口。
 - 当前没有审核处置动作、处罚、封禁、申诉或通知。
-- 当前没有用户举报队列。
+- `ReportTargetType.USER` 仅为 enum 预留，当前没有 `targetUserId` 关系，也没有用户举报队列。
+- `RESTORE_CONTENT` 不应在第一轮开放给 `MODERATOR`。
+- 第一轮不要把 `UNDER_REVIEW` 写入 `Thread.status` 或 `Comment.status`；它只用于 `Report.status`。
 - 管理后台 UI 尚未接入该接口；后续需要在 admin app 中加入登录态、表格筛选和危险操作二次确认。

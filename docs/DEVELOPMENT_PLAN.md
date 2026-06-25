@@ -40,7 +40,7 @@ Migration/test/rate-limit hardening complete：已补充 Prisma baseline 与 aut
 
 审核后台基础能力已推进：新增 `AdminRoleAssignment` 与 `AdminRole`，`MODERATOR`/`ADMIN` active 角色可访问只读举报队列 `GET /api/admin/reports`，每次查看队列写入 `ADMIN_REPORT_QUEUE_VIEWED` 审计事件。队列响应只返回公开用户信息，不暴露实名、邮箱或凭据字段。
 
-下一步需要整体梳理审核动作状态机，再开发隐藏/恢复内容、处罚、用户举报、申诉、通知和管理后台 UI。不要在没有清晰权限与审计边界时直接实现危险操作。
+状态机梳理阶段：`docs/MODERATION_FLOW.md` 固定第一轮审核动作的权限矩阵和状态流转。下一步先做 `feature/moderation-actions` 的最小动作接口，再开发管理后台 UI、处罚、用户举报、申诉和通知。不要在没有清晰权限与审计边界时直接实现危险操作。
 
 ## 第 7 次迭代：搜索与通知
 

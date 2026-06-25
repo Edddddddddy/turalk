@@ -25,6 +25,7 @@
 - 不批量修改与任务无关的文件，不擅自改变既定架构。
 - 不绕过 TypeScript、ESLint 或 Prisma 校验。
 - 页面组件不承载业务逻辑；使用 `features`、service、API client 或后端模块分层。
+- 修改审核、举报、内容处置或管理员权限前，必须先阅读 `docs/MODERATION_FLOW.md`。
 
 # Commands
 
