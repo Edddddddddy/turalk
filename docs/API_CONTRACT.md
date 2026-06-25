@@ -365,7 +365,7 @@
 
 ## Reports API
 
-当前实现帖子和评论举报入口。举报会进入 `Report` 表，状态默认为 `OPEN`，并写入 `REPORT_CREATED` 审计事件。审核队列、处置动作、管理员 RBAC 和申诉流程会在后续 moderation 迭代实现。
+当前实现帖子和评论举报入口。举报会进入 `Report` 表，状态默认为 `OPEN`，并写入 `REPORT_CREATED` 审计事件。审核队列只读接口已在 Admin Moderation API 中提供；处置动作、用户举报和申诉流程会在后续 moderation 迭代实现。
 
 本轮不实现用户举报：现有 `Report` 模型没有 `targetUserId` 字段，不能把用户目标塞进 `details` 这种非结构化字段里。用户举报需要和管理员权限、用户处置动作一起设计。
 
@@ -411,3 +411,68 @@
 ```
 
 目标不存在、不可见或已软删除时返回 `REPORT_TARGET_NOT_FOUND`。未实名返回 `REPORT_REQUIRES_VERIFIED_IDENTITY`。同一用户对同一目标已有未处理举报时返回 `REPORT_ALREADY_OPEN`。`details` 不得包含身份证号、手机号、真实邮箱、token 或其他隐私/密钥。
+
+## Admin Moderation API
+
+当前仅实现举报审核队列的只读基础能力，用于后续处置动作开发前确认 RBAC、分页、公开用户输出和审计边界。
+
+所有 admin 路由都需要 `Authorization: Bearer <access-token>`，并要求当前用户在 `AdminRoleAssignment` 中拥有 active 的 `MODERATOR` 或 `ADMIN` 角色。无管理员角色返回 HTTP `403` 和 `ADMIN_REQUIRED`。管理员角色暂不提供公开授予 API；本地开发可通过受控数据库操作临时授予。
+
+### List Admin Reports
+
+`GET /api/admin/reports?status=OPEN&limit=50&cursor=report-id`
+
+可选查询：
+
+- `status`: `OPEN`、`TRIAGED`、`UNDER_REVIEW`、`RESOLVED`、`DISMISSED`
+- `limit`: 默认 `50`，最大 `100`
+- `cursor`: 上一页返回的 `nextCursor`
+
+成功返回：
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "report-id",
+        "reasonCode": "SPAM",
+        "details": "可选补充说明",
+        "status": "OPEN",
+        "reporter": {
+          "id": "public-reporter-id",
+          "displayName": "举报玩家",
+          "avatarUrl": null
+        },
+        "reviewedBy": null,
+        "target": {
+          "type": "THREAD",
+          "id": "thread-id",
+          "threadId": "thread-id",
+          "title": "被举报帖子标题",
+          "preview": "帖子正文预览",
+          "author": {
+            "id": "public-author-id",
+            "displayName": "发帖玩家",
+            "avatarUrl": null
+          }
+        },
+        "createdAt": "2026-06-24T00:00:00.000Z",
+        "updatedAt": "2026-06-24T00:00:00.000Z"
+      }
+    ],
+    "nextCursor": null
+  },
+  "error": null
+}
+```
+
+响应只包含公开用户 ID、昵称和头像，不返回内部用户 ID、邮箱、密码 hash、refresh token hash、identity hash 或 provider token。每次查看队列都会写入 `ADMIN_REPORT_QUEUE_VIEWED` 审计事件。
+
+### Admin API Current Limits
+
+- 当前没有管理员授予/撤销接口。
+- 当前没有审核处置动作、处罚、封禁、申诉或通知。
+- 当前没有用户举报队列。
+- 管理后台 UI 尚未接入该接口；后续需要在 admin app 中加入登录态、表格筛选和危险操作二次确认。
